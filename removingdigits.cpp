@@ -30,7 +30,7 @@ using namespace __gnu_pbds;
 #define set_bits __builtin_popcountll
 #define sz(x) ((int)(x).size())
 #define all(x) (x).begin(), (x).end()
-// #define int long long
+#define int long long
 #define w(x) \
   int x;     \
   cin >> x;  \
@@ -85,31 +85,42 @@ ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) %
 ll mod_div(ll a, ll b, ll m) {a = a % m; b = b % m; return (mod_mul(a, mminvprime(b, m), m) + m) % m;}  //only for prime m
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0) n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
 /*--------------------------------------------------------------------------------------------------------------------------*/
- 
- 
-void solve(){
-  int n,x;
-  cin>>n>>x;
-  vector<int>vec(n+1);
-  for(int i=1;i<=n;i++)cin>>vec[i];
-  int dp[n+1][x+1];
-  memset(dp,0,sizeof);
-  dp[0][0]=1;
+ vector<int>dp;
 
-  for(int i=1;i<=n;i++)
-  {
-    for(int j=0;j<=x;j++){
-      if(j==0){
-        dp[i][j]=1;
-      }
-      else{
-      int op1=(i==1)?0:dp[i-1][j];
-      int op2= (vec[i]>j)?0:dp[i][j-vec[i]];
-      dp[i][j]=(op1+op2)%MOD;
-     }
+ int find_ans(int n){
+  if(n==0)return 0;
+  if(dp[n]!=-1)return dp[n];
+  int ans=INF;
+  int r=n;
+  while(r>0){
+    int k=r%10;
+    r=r/10;
+    if(k!=0){
+      ans=min(ans,find_ans(n-k));
     }
   }
-  cout<<dp[n][x]<<endl;
+  return dp[n]=ans+1;
+
+ }
+void solve(){
+ int n;
+ cin>>n;
+ int dp[n+1];
+ dp[0]=0;
+ for(int i=1;i<=n;i++){
+  int ans=INF;
+  int r=i;
+  while(r>0){
+    int k=r%10;
+    r=r/10;
+    if(k!=0){
+      ans=min(ans,dp[i-k]);
+    }
+  }
+  dp[i]=ans+1;
+
+ }
+ cout<<dp[n]<<endl;
  
 }
 int32_t main() {
